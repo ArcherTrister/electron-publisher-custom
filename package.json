@@ -12,10 +12,9 @@
   "bugs": "https://github.com/ArcherTrister/electron-publisher-custom/issues",
   "homepage": "https://github.com/ArcherTrister/electron-publisher-custom",
   "files": [
-    "dist"
+    "out"
   ],
   "scripts": {
-    "postinstall": "tsc --traceResolution",
     "build": "tsc --traceResolution",
     "login": "npm login",
     "publish": "tsc && npm publish --access=public",

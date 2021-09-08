@@ -112,7 +112,8 @@ package.json
                 Version = new Version(version),
                 Arch = arch,
                 OS = os,
-                FileName = fileName
+                FileName = fileName,
+                FileType = Path.GetExtension(fileName)
             };
             versionDic.Add(versionInfo.Id, versionInfo);
             return Ok("上传完成！");
