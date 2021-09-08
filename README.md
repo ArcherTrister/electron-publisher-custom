@@ -12,7 +12,7 @@ WebPack 打包暂未实现，请忽略掉
 
 1. 增加是否强制更新参数
 2. 增加更新说明参数
-
+3. 增加上传 auth
 
 ## 使用方式
 
@@ -81,15 +81,20 @@ package.json
     ],
   }
 
+```
+
+```
+
   // 需注意，打包脚本需使用 -p 参数才能应用自定义发布
-  // updaterPath 参数可为空，则使用默认值 `/api/app/upload/${this.metadata?.version}/${Arch[arch]}`
+  // eg: electron-builder -w --ia32 -p always
+  // updaterPath 为空，则使用默认值 `/api/app/upload/${version}/${arch}`
   // updaterPath 如需自定义请确认以 / 开头
 
 ```
 
 ### 后端示例
 
-``` csharp
+```csharp
 
         /// <summary>
         /// ApplicationAutoUpload
