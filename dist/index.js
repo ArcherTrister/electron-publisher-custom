@@ -65,7 +65,7 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
                 if (((_d = this.configuration) === null || _d === void 0 ? void 0 : _d.updaterPath) === null ||
                     ((_e = this.configuration) === null || _e === void 0 ? void 0 : _e.updaterPath) === undefined ||
                     ((_f = this.configuration) === null || _f === void 0 ? void 0 : _f.updaterPath) === "") {
-                    uploadPath = `api/app/upload/${(_g = this.metadata) === null || _g === void 0 ? void 0 : _g.version}/${builder_util_1.Arch[arch]}`;
+                    uploadPath = `/api/app/upload/${(_g = this.metadata) === null || _g === void 0 ? void 0 : _g.version}/${builder_util_1.Arch[arch]}`;
                 }
                 else {
                     uploadPath = `${(_h = this.configuration) === null || _h === void 0 ? void 0 : _h.updaterPath}/${(_j = this.metadata) === null || _j === void 0 ? void 0 : _j.version}/${builder_util_1.Arch[arch]}`;

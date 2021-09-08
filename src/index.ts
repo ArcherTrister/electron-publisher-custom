@@ -72,7 +72,7 @@ class CustomPublisher extends HttpPublisher {
         this.configuration?.updaterPath === undefined ||
         this.configuration?.updaterPath === ""
       ) {
-        uploadPath = `api/app/upload/${this.metadata?.version}/${Arch[arch]}`;
+        uploadPath = `/api/app/upload/${this.metadata?.version}/${Arch[arch]}`;
       } else {
         uploadPath = `${this.configuration?.updaterPath}/${this.metadata?.version}/${Arch[arch]}`;
       }

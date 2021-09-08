@@ -61,7 +61,8 @@ package.json
       {
         "provider": "custom",
         "providerName": "PrivateServer",
-        "url": "http://localhost/api/application/upload/${productName}/${os}"
+        "url": "http://localhost",
+        "uploadPath": "/api/application/upload/${productName}/${os}"
       }
     ],
   }
