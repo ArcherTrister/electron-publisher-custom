@@ -36,18 +36,16 @@ const url_1 = require("url");
 const electron_publish_1 = require("electron-publish");
 class CustomPublisher extends electron_publish_1.HttpPublisher {
     constructor(context, configuration) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c;
         super(context);
         this.configuration = configuration;
         this.providerName = "PrivateServer";
         const publishContext = context;
         this.metadata = (_a = publishContext === null || publishContext === void 0 ? void 0 : publishContext.packager) === null || _a === void 0 ? void 0 : _a.metadata;
-        console.log(this.configuration);
-        console.log("this.configuration");
-        if (((_b = this.configuration) === null || _b === void 0 ? void 0 : _b.url) === null ||
-            ((_c = this.configuration) === null || _c === void 0 ? void 0 : _c.url) === undefined ||
-            ((_d = this.configuration) === null || _d === void 0 ? void 0 : _d.url) === "") {
-            throw new Error(`The ${(_f = (_e = this.configuration) === null || _e === void 0 ? void 0 : _e.provider) !== null && _f !== void 0 ? _f : "custom"} configuration item URL cannot be null`);
+        if (this.configuration.url === null ||
+            this.configuration.url === undefined ||
+            this.configuration.url === "") {
+            throw new Error(`The ${(_c = (_b = this.configuration) === null || _b === void 0 ? void 0 : _b.provider) !== null && _c !== void 0 ? _c : "custom"} configuration item URL cannot be null`);
         }
         const parsedUrl = (0, url_1.parse)(this.configuration.url);
         this.hostname = parsedUrl.hostname;
@@ -55,7 +53,7 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
         this.port = parsedUrl.port;
     }
     doUpload(fileName, arch, dataLength, requestProcessor, file) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             if (((_a = this.metadata) === null || _a === void 0 ? void 0 : _a.version) === null ||
                 ((_b = this.metadata) === null || _b === void 0 ? void 0 : _b.version) === undefined ||
@@ -64,13 +62,13 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
             }
             else {
                 let uploadPath;
-                if (((_d = this.configuration) === null || _d === void 0 ? void 0 : _d.updaterPath) === null ||
-                    ((_e = this.configuration) === null || _e === void 0 ? void 0 : _e.updaterPath) === undefined ||
-                    ((_f = this.configuration) === null || _f === void 0 ? void 0 : _f.updaterPath) === "") {
-                    uploadPath = `/api/app/upload/${(_g = this.metadata) === null || _g === void 0 ? void 0 : _g.version}/${builder_util_1.Arch[arch]}`;
+                if (this.configuration.updaterPath === null ||
+                    this.configuration.updaterPath === undefined ||
+                    this.configuration.updaterPath === "") {
+                    uploadPath = `/api/app/upload/${(_d = this.metadata) === null || _d === void 0 ? void 0 : _d.version}/${builder_util_1.Arch[arch]}`;
                 }
                 else {
-                    uploadPath = `${(_h = this.configuration) === null || _h === void 0 ? void 0 : _h.updaterPath}/${(_j = this.metadata) === null || _j === void 0 ? void 0 : _j.version}/${builder_util_1.Arch[arch]}`;
+                    uploadPath = `${this.configuration.updaterPath}/${(_e = this.metadata) === null || _e === void 0 ? void 0 : _e.version}/${builder_util_1.Arch[arch]}`;
                 }
                 return yield this.doUploadFile(0, uploadPath, fileName, dataLength, requestProcessor);
             }
