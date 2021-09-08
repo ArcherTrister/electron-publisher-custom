@@ -13,7 +13,7 @@ import { HttpPublisher, PublishContext } from "electron-publish";
 
 export interface CustomConfig extends CustomPublishOptions {
   url: string;
-  uploadPath?: string;
+  updaterPath?: string;
 }
 
 class CustomPublisher extends HttpPublisher {
@@ -30,10 +30,11 @@ class CustomPublisher extends HttpPublisher {
     super(context);
     const publishContext: any = context;
     this.metadata = publishContext?.packager?.metadata;
+ 
     if (
-      this.configuration?.url === null ||
-      this.configuration?.url === undefined ||
-      this.configuration?.url === ""
+      this.configuration.url === null ||
+      this.configuration.url === undefined ||
+      this.configuration.url === ""
     ) {
       throw new Error(
         `The ${
@@ -68,13 +69,13 @@ class CustomPublisher extends HttpPublisher {
     } else {
       let uploadPath;
       if (
-        this.configuration?.updaterPath === null ||
-        this.configuration?.updaterPath === undefined ||
-        this.configuration?.updaterPath === ""
+        this.configuration.updaterPath === null ||
+        this.configuration.updaterPath === undefined ||
+        this.configuration.updaterPath === ""
       ) {
         uploadPath = `/api/app/upload/${this.metadata?.version}/${Arch[arch]}`;
       } else {
-        uploadPath = `${this.configuration?.updaterPath}/${this.metadata?.version}/${Arch[arch]}`;
+        uploadPath = `${this.configuration.updaterPath}/${this.metadata?.version}/${Arch[arch]}`;
       }
       return await this.doUploadFile(
         0,

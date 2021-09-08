@@ -42,6 +42,8 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
         this.providerName = "PrivateServer";
         const publishContext = context;
         this.metadata = (_a = publishContext === null || publishContext === void 0 ? void 0 : publishContext.packager) === null || _a === void 0 ? void 0 : _a.metadata;
+        console.log(this.configuration);
+        console.log("this.configuration");
         if (((_b = this.configuration) === null || _b === void 0 ? void 0 : _b.url) === null ||
             ((_c = this.configuration) === null || _c === void 0 ? void 0 : _c.url) === undefined ||
             ((_d = this.configuration) === null || _d === void 0 ? void 0 : _d.url) === "") {

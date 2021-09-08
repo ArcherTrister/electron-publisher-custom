@@ -62,7 +62,7 @@ package.json
         "provider": "custom",
         "providerName": "PrivateServer",
         "url": "http://localhost",
-        "uploadPath": "/api/application/upload/${productName}/${os}"
+        "updaterPath": "/api/application/upload/${productName}/${os}"
       }
     ],
   }
