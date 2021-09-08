@@ -8,6 +8,14 @@
 
 WebPack 打包暂未实现，请忽略掉
 
+# Plan
+
+1. 增加是否强制更新参数
+2. 增加更新说明参数
+
+
+## 使用方式
+
 ### 安装
 ### ①【npm版本大于等于7】
 
@@ -48,14 +56,16 @@ WebPack 打包暂未实现，请忽略掉
 
 ### ④
 
-- 生成electron-publisher-custom.js文件放到项目下，修改tsconfig outFile配置
+- 修改tsconfig outFile配置为 **electron-publisher-custom.js**，将生成的文件放到项目 **buildResourcesDir** 下
 
 ### 配置
 
 package.json
 
 ```json
-
+  "scripts": {
+    "dist:win:ia32": "electron-builder -w --ia32 -p always"
+  },
   "build": {
     "publish": [
       {
@@ -66,6 +76,10 @@ package.json
       }
     ],
   }
+
+  // 需注意，打包脚本需使用 -p 参数才能应用自定义发布
+  // updaterPath 参数可为空，则使用默认值 `/api/app/upload/${this.metadata?.version}/${Arch[arch]}`
+  // updaterPath 如需自定义请确认以 / 开头
 
 ```
 
