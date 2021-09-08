@@ -48,15 +48,19 @@ WebPack 打包暂未实现，请忽略掉
 
 > npm link ../../electron-publisher-custom
 
-### ③
+### ③ 【推荐】
 
 - npm安装
 
 > npm install github:ArcherTrister/electron-publisher-custom
 
+or
+
+> npm install git+https://github.com/ArcherTrister/electron-publisher-custom.git
+
 ### ④
 
-- 修改tsconfig outFile配置为 **electron-publisher-custom.js**，将生成的文件放到项目 **buildResourcesDir** 下
+- 修改tsconfig中outFile配置为 **electron-publisher-custom.js**，将生成的文件放到项目 **buildResourcesDir** 下
 
 ### 配置
 
