@@ -10,10 +10,10 @@ import * as mime from "mime";
 import { parse as parseUrl } from "url";
 import { HttpPublisher, PublishContext } from "electron-publish";
 
-
 export interface CustomConfig extends CustomPublishOptions {
   url: string;
   updaterPath?: string;
+  channel?: string;
 }
 
 class CustomPublisher extends HttpPublisher {
@@ -22,6 +22,8 @@ class CustomPublisher extends HttpPublisher {
   private readonly hostname: string | null;
   private readonly protocol: string | null;
   private readonly port: string | null;
+  private readonly productName: string;
+  private readonly version: string;
 
   constructor(
     context: PublishContext,
@@ -30,22 +32,38 @@ class CustomPublisher extends HttpPublisher {
     super(context);
     const publishContext: any = context;
     this.metadata = publishContext?.packager?.metadata;
- 
-    if (
-      this.configuration.url === null ||
-      this.configuration.url === undefined ||
-      this.configuration.url === ""
-    ) {
+    // log.info(publishContext?.packager);
+
+    if (this.isEmpty(this.configuration.url)) {
       throw new Error(
         `The ${
           this.configuration?.provider ?? "custom"
         } configuration item URL cannot be null`
       );
     }
+    this.version = this.metadata?.version || "";
+    if (this.isEmpty(this.version)) {
+      throw new Error(`The package configuration item Version cannot be null`);
+    }
+    this.productName = this.metadata?.productName || this.metadata?.name || "";
+    if (this.isEmpty(this.productName)) {
+      throw new Error(
+        `The package configuration item ProductName or Name cannot be null`
+      );
+    }
+
     const parsedUrl = parseUrl(this.configuration.url);
     this.hostname = parsedUrl.hostname;
     this.protocol = parsedUrl.protocol;
     this.port = parsedUrl.port;
+  }
+
+  private isEmpty(str: string | null | undefined) {
+    if (str === "undefined" || !str || !/[^\s]/.test(str)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   protected async doUpload(
@@ -58,33 +76,25 @@ class CustomPublisher extends HttpPublisher {
     ) => void,
     file?: string
   ): Promise<any> {
-    if (
-      this.metadata?.version === null ||
-      this.metadata?.version === undefined ||
-      this.metadata?.version === ""
-    ) {
-      return Promise.reject(
-        `The package configuration item Version cannot be null`
-      );
+    let uploadPath;
+    if (this.isEmpty(this.configuration.updaterPath)) {
+      uploadPath = `/upload/${this.productName}/${this.version}/${
+        process.platform
+      }/${Arch[arch]}/${this.configuration.channel || "latest"}`;
     } else {
-      let uploadPath;
-      if (
-        this.configuration.updaterPath === null ||
-        this.configuration.updaterPath === undefined ||
-        this.configuration.updaterPath === ""
-      ) {
-        uploadPath = `/api/app/upload/${this.metadata?.version}/${Arch[arch]}`;
-      } else {
-        uploadPath = `${this.configuration.updaterPath}/${this.metadata?.version}/${Arch[arch]}`;
-      }
-      return await this.doUploadFile(
-        0,
-        uploadPath,
-        fileName,
-        dataLength,
-        requestProcessor
-      );
+      uploadPath = `${this.configuration.updaterPath}/${this.productName}/${
+        this.version
+      }/${process.platform}/${Arch[arch]}/${
+        this.configuration.channel || "latest"
+      }`;
     }
+    return await this.doUploadFile(
+      0,
+      uploadPath,
+      fileName,
+      dataLength,
+      requestProcessor
+    );
   }
 
   private async doUploadFile(
@@ -131,7 +141,7 @@ class CustomPublisher extends HttpPublisher {
       if (attemptNumber > 3) {
         return Promise.reject(e);
       } else {
-        return new Promise((resolve, reject_1) => {
+        return new Promise((resolve, reject) => {
           const newAttemptNumber = attemptNumber + 1;
           setTimeout(() => {
             this.doUploadFile(
@@ -142,7 +152,7 @@ class CustomPublisher extends HttpPublisher {
               requestProcessor
             )
               .then(resolve)
-              .catch(reject_1);
+              .catch(reject);
           }, newAttemptNumber * 2000);
         });
       }

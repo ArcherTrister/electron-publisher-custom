@@ -36,42 +36,47 @@ const url_1 = require("url");
 const electron_publish_1 = require("electron-publish");
 class CustomPublisher extends electron_publish_1.HttpPublisher {
     constructor(context, configuration) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f;
         super(context);
         this.configuration = configuration;
         this.providerName = "PrivateServer";
         const publishContext = context;
         this.metadata = (_a = publishContext === null || publishContext === void 0 ? void 0 : publishContext.packager) === null || _a === void 0 ? void 0 : _a.metadata;
-        if (this.configuration.url === null ||
-            this.configuration.url === undefined ||
-            this.configuration.url === "") {
+        // log.info(publishContext?.packager);
+        if (this.isEmpty(this.configuration.url)) {
             throw new Error(`The ${(_c = (_b = this.configuration) === null || _b === void 0 ? void 0 : _b.provider) !== null && _c !== void 0 ? _c : "custom"} configuration item URL cannot be null`);
+        }
+        this.version = ((_d = this.metadata) === null || _d === void 0 ? void 0 : _d.version) || "";
+        if (this.isEmpty(this.version)) {
+            throw new Error(`The package configuration item Version cannot be null`);
+        }
+        this.productName = ((_e = this.metadata) === null || _e === void 0 ? void 0 : _e.productName) || ((_f = this.metadata) === null || _f === void 0 ? void 0 : _f.name) || "";
+        if (this.isEmpty(this.productName)) {
+            throw new Error(`The package configuration item ProductName or Name cannot be null`);
         }
         const parsedUrl = (0, url_1.parse)(this.configuration.url);
         this.hostname = parsedUrl.hostname;
         this.protocol = parsedUrl.protocol;
         this.port = parsedUrl.port;
     }
+    isEmpty(str) {
+        if (str === "undefined" || !str || !/[^\s]/.test(str)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     doUpload(fileName, arch, dataLength, requestProcessor, file) {
-        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
-            if (((_a = this.metadata) === null || _a === void 0 ? void 0 : _a.version) === null ||
-                ((_b = this.metadata) === null || _b === void 0 ? void 0 : _b.version) === undefined ||
-                ((_c = this.metadata) === null || _c === void 0 ? void 0 : _c.version) === "") {
-                return Promise.reject(`The package configuration item Version cannot be null`);
+            let uploadPath;
+            if (this.isEmpty(this.configuration.updaterPath)) {
+                uploadPath = `/upload/${this.productName}/${this.version}/${process.platform}/${builder_util_1.Arch[arch]}/${this.configuration.channel || "latest"}`;
             }
             else {
-                let uploadPath;
-                if (this.configuration.updaterPath === null ||
-                    this.configuration.updaterPath === undefined ||
-                    this.configuration.updaterPath === "") {
-                    uploadPath = `/api/app/upload/${(_d = this.metadata) === null || _d === void 0 ? void 0 : _d.version}/${builder_util_1.Arch[arch]}`;
-                }
-                else {
-                    uploadPath = `${this.configuration.updaterPath}/${(_e = this.metadata) === null || _e === void 0 ? void 0 : _e.version}/${builder_util_1.Arch[arch]}`;
-                }
-                return yield this.doUploadFile(0, uploadPath, fileName, dataLength, requestProcessor);
+                uploadPath = `${this.configuration.updaterPath}/${this.productName}/${this.version}/${process.platform}/${builder_util_1.Arch[arch]}/${this.configuration.channel || "latest"}`;
             }
+            return yield this.doUploadFile(0, uploadPath, fileName, dataLength, requestProcessor);
         });
     }
     doUploadFile(attemptNumber, uploadPath, fileName, dataLength, requestProcessor) {
