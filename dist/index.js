@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -96,22 +100,25 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
                 }), this.context.cancellationToken, requestProcessor);
             }
             catch (e) {
-                if (e.statusCode === 422 &&
-                    e.description != null &&
-                    e.description.errors != null &&
-                    e.description.errors[0].code === "already_exists") {
+                if (e.statusCode === 422
+                // &&
+                // e.description != null &&
+                // e.description.errors != null &&
+                // e.description.errors[0].code === "already_exists"
+                ) {
                     builder_util_1.log.warn({ file: fileName, reason: "already exists on Custom" }, "overwrite published file");
+                    return Promise.resolve();
                 }
                 if (attemptNumber > 3) {
                     return Promise.reject(e);
                 }
                 else {
-                    return new Promise((resolve, reject_1) => {
+                    return new Promise((resolve, reject) => {
                         const newAttemptNumber = attemptNumber + 1;
                         setTimeout(() => {
                             this.doUploadFile(newAttemptNumber, uploadPath, fileName, dataLength, requestProcessor)
                                 .then(resolve)
-                                .catch(reject_1);
+                                .catch(reject);
                         }, newAttemptNumber * 2000);
                     });
                 }

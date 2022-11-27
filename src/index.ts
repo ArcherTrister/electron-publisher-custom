@@ -16,7 +16,7 @@ export interface CustomConfig extends CustomPublishOptions {
   channel?: string;
 }
 
-class CustomPublisher extends HttpPublisher {
+export default class CustomPublisher extends HttpPublisher {
   readonly providerName = "PrivateServer";
   private readonly metadata: Metadata;
   private readonly hostname: string | null;
@@ -127,15 +127,17 @@ class CustomPublisher extends HttpPublisher {
       );
     } catch (e: any) {
       if (
-        e.statusCode === 422 &&
-        e.description != null &&
-        e.description.errors != null &&
-        e.description.errors[0].code === "already_exists"
+        e.statusCode === 422
+        // &&
+        // e.description != null &&
+        // e.description.errors != null &&
+        // e.description.errors[0].code === "already_exists"
       ) {
         log.warn(
           { file: fileName, reason: "already exists on Custom" },
           "overwrite published file"
         );
+        return Promise.resolve();
       }
 
       if (attemptNumber > 3) {
@@ -163,5 +165,3 @@ class CustomPublisher extends HttpPublisher {
     return `Custom (owner: ${this.metadata?.author?.name}, project: ${this.metadata?.name}, version: ${this.metadata?.version})`;
   }
 }
-
-module.exports = CustomPublisher;
