@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -106,12 +110,12 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
                     return Promise.reject(e);
                 }
                 else {
-                    return new Promise((resolve, reject_1) => {
+                    return new Promise((resolve, reject) => {
                         const newAttemptNumber = attemptNumber + 1;
                         setTimeout(() => {
                             this.doUploadFile(newAttemptNumber, uploadPath, fileName, dataLength, requestProcessor)
                                 .then(resolve)
-                                .catch(reject_1);
+                                .catch(reject);
                         }, newAttemptNumber * 2000);
                     });
                 }
@@ -123,4 +127,4 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
         return `Custom (owner: ${(_b = (_a = this.metadata) === null || _a === void 0 ? void 0 : _a.author) === null || _b === void 0 ? void 0 : _b.name}, project: ${(_c = this.metadata) === null || _c === void 0 ? void 0 : _c.name}, version: ${(_d = this.metadata) === null || _d === void 0 ? void 0 : _d.version})`;
     }
 }
-module.exports = CustomPublisher;
+exports.default = CustomPublisher;
