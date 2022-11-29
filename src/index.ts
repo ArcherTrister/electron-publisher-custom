@@ -16,7 +16,7 @@ export interface CustomConfig extends CustomPublishOptions {
   channel?: string;
 }
 
-class CustomPublisher extends HttpPublisher {
+export default class CustomPublisher extends HttpPublisher {
   readonly providerName = "PrivateServer";
   private readonly metadata: Metadata;
   private readonly hostname: string | null;
@@ -163,5 +163,3 @@ class CustomPublisher extends HttpPublisher {
     return `Custom (owner: ${this.metadata?.author?.name}, project: ${this.metadata?.name}, version: ${this.metadata?.version})`;
   }
 }
-
-module.exports = CustomPublisher;
