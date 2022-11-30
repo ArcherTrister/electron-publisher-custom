@@ -32,7 +32,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CustomPublisher = void 0;
 const builder_util_1 = require("builder-util");
 const builder_util_runtime_1 = require("builder-util-runtime");
 const nodeHttpExecutor_1 = require("builder-util/out/nodeHttpExecutor");
@@ -40,13 +39,11 @@ const mime = __importStar(require("mime"));
 const url_1 = require("url");
 const electron_publish_1 = require("electron-publish");
 class CustomPublisher extends electron_publish_1.HttpPublisher {
-    get providerName() {
-        return "custom";
-    }
     constructor(context, configuration) {
         var _a, _b, _c, _d, _e, _f;
         super(context);
         this.configuration = configuration;
+        this.providerName = "custom";
         const publishContext = context;
         this.metadata = (_a = publishContext === null || publishContext === void 0 ? void 0 : publishContext.packager) === null || _a === void 0 ? void 0 : _a.metadata;
         // log.info(publishContext?.packager);
@@ -143,4 +140,4 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
         return `Custom (owner: ${(_b = (_a = this.metadata) === null || _a === void 0 ? void 0 : _a.author) === null || _b === void 0 ? void 0 : _b.name}, project: ${(_c = this.metadata) === null || _c === void 0 ? void 0 : _c.name}, version: ${(_d = this.metadata) === null || _d === void 0 ? void 0 : _d.version})`;
     }
 }
-exports.CustomPublisher = CustomPublisher;
+exports.default = CustomPublisher;

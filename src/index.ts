@@ -16,11 +16,8 @@ export interface CustomConfig extends CustomPublishOptions {
   updaterPath?: string;
 }
 
-export class CustomPublisher extends HttpPublisher {
-  get providerName(): PublishProvider {
-    return "custom";
-  }
-  // readonly providerName = "PrivateServer";
+export default class CustomPublisher extends HttpPublisher {
+  readonly providerName = "custom";
   private readonly metadata: Metadata;
   private readonly hostname: string | null;
   private readonly protocol: string | null;

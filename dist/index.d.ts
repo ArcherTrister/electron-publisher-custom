@@ -1,15 +1,15 @@
 /// <reference types="node" />
 import { Arch } from "builder-util";
-import { CustomPublishOptions, PublishProvider } from "builder-util-runtime";
+import { CustomPublishOptions } from "builder-util-runtime";
 import { ClientRequest } from "http";
 import { HttpPublisher, PublishContext } from "electron-publish";
 export interface CustomConfig extends CustomPublishOptions {
     url: string;
     updaterPath?: string;
 }
-export declare class CustomPublisher extends HttpPublisher {
+export default class CustomPublisher extends HttpPublisher {
     private readonly configuration;
-    get providerName(): PublishProvider;
+    readonly providerName = "custom";
     private readonly metadata;
     private readonly hostname;
     private readonly protocol;

@@ -93,8 +93,6 @@ package.json
     "publish": [
       {
         "provider": "custom",
-        "providerName": "PrivateServer",
-        "channel": "latest",
         "url": "http://localhost:port",
         "updaterPath": "/upload"
       }
@@ -108,6 +106,8 @@ package.json
   // 需注意，打包脚本需使用 -p 参数才能应用自定义发布
   // eg: electron-builder -w --ia32 -p always
   // channel 为空，则使用默认值 `latest`
+  // version - channel
+  // eg: "version": "1.0.0" "version": "1.0.0-beta" | "version": "1.0.0-latest" | "version": "1.0.0-latest_xxx"
   // updaterPath 为空，则使用默认值 `/upload`
   // updaterPath 如需自定义请确认以 / 开头
   // 最终上传路由 `{updaterPath}/{productName|name}/{version}/{platform}/{arch}/{channel}`
