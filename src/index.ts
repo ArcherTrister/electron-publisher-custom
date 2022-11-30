@@ -2,6 +2,7 @@ import { Arch, log } from "builder-util";
 import {
   configureRequestOptions,
   CustomPublishOptions,
+  PublishProvider,
 } from "builder-util-runtime";
 import { Metadata } from "app-builder-lib";
 import { httpExecutor } from "builder-util/out/nodeHttpExecutor";
@@ -13,11 +14,13 @@ import { HttpPublisher, PublishContext } from "electron-publish";
 export interface CustomConfig extends CustomPublishOptions {
   url: string;
   updaterPath?: string;
-  channel?: string;
 }
 
-export default class CustomPublisher extends HttpPublisher {
-  readonly providerName = "PrivateServer";
+export class CustomPublisher extends HttpPublisher {
+  get providerName(): PublishProvider {
+    return "custom";
+  }
+  // readonly providerName = "PrivateServer";
   private readonly metadata: Metadata;
   private readonly hostname: string | null;
   private readonly protocol: string | null;
@@ -33,6 +36,9 @@ export default class CustomPublisher extends HttpPublisher {
     const publishContext: any = context;
     this.metadata = publishContext?.packager?.metadata;
     // log.info(publishContext?.packager);
+
+    // const appInfo = publishContext?.packager.appInfo;
+    // console.log(appInfo);
 
     if (this.isEmpty(this.configuration.url)) {
       throw new Error(
@@ -77,16 +83,19 @@ export default class CustomPublisher extends HttpPublisher {
     file?: string
   ): Promise<any> {
     let uploadPath;
-    if (this.isEmpty(this.configuration.updaterPath)) {
-      uploadPath = `/upload/${this.productName}/${this.version}/${
-        process.platform
-      }/${Arch[arch]}/${this.configuration.channel || "latest"}`;
+    let channel: string = "latest";
+    let version: string;
+    if (this.version.includes("-")) {
+      const splits = this.version.split("-");
+      version = splits[0];
+      channel = splits[1];
     } else {
-      uploadPath = `${this.configuration.updaterPath}/${this.productName}/${
-        this.version
-      }/${process.platform}/${Arch[arch]}/${
-        this.configuration.channel || "latest"
-      }`;
+      version = this.version;
+    }
+    if (this.isEmpty(this.configuration.updaterPath)) {
+      uploadPath = `/upload/${this.productName}/${version}/${process.platform}/${Arch[arch]}/${channel}`;
+    } else {
+      uploadPath = `${this.configuration.updaterPath}/${this.productName}/${version}/${process.platform}/${Arch[arch]}/${channel}`;
     }
     return await this.doUploadFile(
       0,
@@ -126,20 +135,16 @@ export default class CustomPublisher extends HttpPublisher {
         requestProcessor
       );
     } catch (e: any) {
-      if (
-        e.statusCode === 422
-        // &&
-        // e.description != null &&
-        // e.description.errors != null &&
-        // e.description.errors[0].code === "already_exists"
-      ) {
+      if (e.statusCode === 422) {
         log.warn(
           { file: fileName, reason: "already exists on Custom" },
           "overwrite published file"
         );
         return Promise.resolve();
       }
-
+      if (e.statusCode === 423) {
+        log.warn(`${fileName} upload fail`);
+      }
       if (attemptNumber > 3) {
         return Promise.reject(e);
       } else {

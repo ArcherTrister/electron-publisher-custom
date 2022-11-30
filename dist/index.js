@@ -32,6 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CustomPublisher = void 0;
 const builder_util_1 = require("builder-util");
 const builder_util_runtime_1 = require("builder-util-runtime");
 const nodeHttpExecutor_1 = require("builder-util/out/nodeHttpExecutor");
@@ -39,14 +40,18 @@ const mime = __importStar(require("mime"));
 const url_1 = require("url");
 const electron_publish_1 = require("electron-publish");
 class CustomPublisher extends electron_publish_1.HttpPublisher {
+    get providerName() {
+        return "custom";
+    }
     constructor(context, configuration) {
         var _a, _b, _c, _d, _e, _f;
         super(context);
         this.configuration = configuration;
-        this.providerName = "PrivateServer";
         const publishContext = context;
         this.metadata = (_a = publishContext === null || publishContext === void 0 ? void 0 : publishContext.packager) === null || _a === void 0 ? void 0 : _a.metadata;
         // log.info(publishContext?.packager);
+        // const appInfo = publishContext?.packager.appInfo;
+        // console.log(appInfo);
         if (this.isEmpty(this.configuration.url)) {
             throw new Error(`The ${(_c = (_b = this.configuration) === null || _b === void 0 ? void 0 : _b.provider) !== null && _c !== void 0 ? _c : "custom"} configuration item URL cannot be null`);
         }
@@ -74,11 +79,21 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
     doUpload(fileName, arch, dataLength, requestProcessor, file) {
         return __awaiter(this, void 0, void 0, function* () {
             let uploadPath;
-            if (this.isEmpty(this.configuration.updaterPath)) {
-                uploadPath = `/upload/${this.productName}/${this.version}/${process.platform}/${builder_util_1.Arch[arch]}/${this.configuration.channel || "latest"}`;
+            let channel = "latest";
+            let version;
+            if (this.version.includes("-")) {
+                const splits = this.version.split("-");
+                version = splits[0];
+                channel = splits[1];
             }
             else {
-                uploadPath = `${this.configuration.updaterPath}/${this.productName}/${this.version}/${process.platform}/${builder_util_1.Arch[arch]}/${this.configuration.channel || "latest"}`;
+                version = this.version;
+            }
+            if (this.isEmpty(this.configuration.updaterPath)) {
+                uploadPath = `/upload/${this.productName}/${version}/${process.platform}/${builder_util_1.Arch[arch]}/${channel}`;
+            }
+            else {
+                uploadPath = `${this.configuration.updaterPath}/${this.productName}/${version}/${process.platform}/${builder_util_1.Arch[arch]}/${channel}`;
             }
             return yield this.doUploadFile(0, uploadPath, fileName, dataLength, requestProcessor);
         });
@@ -100,14 +115,12 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
                 }), this.context.cancellationToken, requestProcessor);
             }
             catch (e) {
-                if (e.statusCode === 422
-                // &&
-                // e.description != null &&
-                // e.description.errors != null &&
-                // e.description.errors[0].code === "already_exists"
-                ) {
+                if (e.statusCode === 422) {
                     builder_util_1.log.warn({ file: fileName, reason: "already exists on Custom" }, "overwrite published file");
                     return Promise.resolve();
+                }
+                if (e.statusCode === 423) {
+                    builder_util_1.log.warn(`${fileName} upload fail`);
                 }
                 if (attemptNumber > 3) {
                     return Promise.reject(e);
@@ -130,4 +143,4 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
         return `Custom (owner: ${(_b = (_a = this.metadata) === null || _a === void 0 ? void 0 : _a.author) === null || _b === void 0 ? void 0 : _b.name}, project: ${(_c = this.metadata) === null || _c === void 0 ? void 0 : _c.name}, version: ${(_d = this.metadata) === null || _d === void 0 ? void 0 : _d.version})`;
     }
 }
-exports.default = CustomPublisher;
+exports.CustomPublisher = CustomPublisher;
