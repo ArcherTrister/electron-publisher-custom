@@ -130,4 +130,4 @@ class CustomPublisher extends electron_publish_1.HttpPublisher {
         return `Custom (owner: ${(_b = (_a = this.metadata) === null || _a === void 0 ? void 0 : _a.author) === null || _b === void 0 ? void 0 : _b.name}, project: ${(_c = this.metadata) === null || _c === void 0 ? void 0 : _c.name}, version: ${(_d = this.metadata) === null || _d === void 0 ? void 0 : _d.version})`;
     }
 }
-module.exports = CustomPublisher;
+exports.default = CustomPublisher;

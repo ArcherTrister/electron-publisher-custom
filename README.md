@@ -2,7 +2,7 @@
 
 先吐槽一番，实在不想要这个名字！！！！！！！！！！！！！！
 
-不过我已经尽力了，issue不被采纳，可能是我撇脚的英语吧😂😂😂
+不过我已经尽力了，issue 不被采纳，可能是我撇脚的英语吧 😂😂😂
 
 [详情](https://github.com/electron-userland/electron-builder/issues/6098)
 
@@ -17,15 +17,19 @@ WebPack 打包暂未实现，请忽略掉
 ## 使用方式
 
 ### 安装
-### ①【npm版本大于等于7】
+
+### ①【npm 版本大于等于 7】
 
 - 克隆本项目
-  
+
 > git clone https://github.com/ArcherTrister/electron-publisher-custom
+
+> git clone https://gitee.com/ArcherTrister/electron-publisher-custom
 
 - 全局 link
 
 在本项目根目录下运行
+
 > npm link
 
 或直接执行 **package** 中的脚本 link
@@ -36,11 +40,13 @@ WebPack 打包暂未实现，请忽略掉
 
 > npm link electron-publisher-custom --save
 
-### ②【需注意link目录层级】
+### ②【需注意 link 目录层级】
 
 - 克隆本项目
-  
+
 > git clone https://github.com/ArcherTrister/electron-publisher-custom
+
+> git clone https://gitee.com/ArcherTrister/electron-publisher-custom
 
 - 项目 link
 
@@ -50,7 +56,7 @@ WebPack 打包暂未实现，请忽略掉
 
 ### ③ 【推荐】
 
-- npm安装
+- npm 安装
 
 > npm install github:ArcherTrister/electron-publisher-custom
 
@@ -60,11 +66,20 @@ or
 
 or
 
-> npm install git+https://hub.fastgit.org/ArcherTrister/electron-publisher-custom.git
+> npm install git+https://gitee.com/ArcherTrister/electron-publisher-custom.git
 
 ### ④
 
-- 修改tsconfig中outFile配置为 **electron-publisher-custom.js**，将生成的文件放到项目 **buildResourcesDir** 下
+～～ - 修改 tsconfig 中 outFile 配置为 **electron-publisher-custom.js**，将生成的文件放到项目 **buildResourcesDir** 下 ～～
+
+- 检查`node_modules`文件夹下刚刚安装的`electron-publisher-custom`包，如果这个包的依赖没有安装成功，在此包文件夹下执行 `npm i` or `yarn` 安装一下依赖
+- 在 build 文件夹下创建`electron-publisher-custom.js`文件，并拷贝下面代码到此文件
+
+```javascript
+// build/electron-publisher-custom.js
+const CustomPublisher = require("electron-publisher-custom");
+module.exports = CustomPublisher;
+```
 
 ### 配置
 
