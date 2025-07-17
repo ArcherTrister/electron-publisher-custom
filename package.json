@@ -24,7 +24,8 @@
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "generate-changeset": "pnpm changeset",
     "generate-schema": "typescript-json-schema packages/app-builder-lib/tsconfig-scheme.json Configuration --out packages/app-builder-lib/scheme.json --noExtraProps --useTypeOfKeyword --strictNullChecks --required && node ./scripts/fix-schema.js",
-    "generate-all": "pnpm generate-schema && pnpm prettier"
+    "generate-all": "pnpm generate-schema && pnpm prettier",
+    "prepare": "husky"
   },
   "dependencies": {
     "app-builder-lib": ">=20.0.0",
@@ -44,6 +45,7 @@
     "@types/mime": "2.0.3",
     "@types/node": "^24.0.7",
     "conventional-changelog-cli": "5.0.0",
+    "husky": "^9.1.7",
     "jest": "^23.6.0",
     "ts-jest": "^29.4.0",
     "ts-loader": "^9.2.3",

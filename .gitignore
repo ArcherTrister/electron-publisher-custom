@@ -118,5 +118,4 @@ out
 .pnp.*
 
 bak/
-dist/
 .DS_Store
