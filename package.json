@@ -1,0 +1,62 @@
+{
+  "name": "electron-publisher-custom",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "author": "ArcherTrister",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArcherTrister/electron-publisher-custom.git"
+  },
+  "bugs": "https://github.com/ArcherTrister/electron-publisher-custom/issues",
+  "homepage": "https://github.com/ArcherTrister/electron-publisher-custom",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --traceResolution",
+    "login": "npm login",
+    "release": "tsc && npm publish --access=public",
+    "link": "npm link",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "generate-changeset": "pnpm changeset",
+    "generate-schema": "typescript-json-schema packages/app-builder-lib/tsconfig-scheme.json Configuration --out packages/app-builder-lib/scheme.json --noExtraProps --useTypeOfKeyword --strictNullChecks --required && node ./scripts/fix-schema.js",
+    "generate-all": "pnpm generate-schema && pnpm prettier"
+  },
+  "dependencies": {
+    "app-builder-lib": ">=20.0.0",
+    "builder-util": ">=20.0.0",
+    "builder-util-runtime": "^9.1.1",
+    "electron-builder": ">=20.0.0",
+    "electron-publish": ">=20.0.0",
+    "form-data": "^4.0.0",
+    "fs-extra": "^10.0.0",
+    "mime": "^2.5.2"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "0.4.7",
+    "@changesets/cli": "2.25.0",
+    "@types/fs-extra": "^9.0.11",
+    "@types/jest": "^29.5.4",
+    "@types/mime": "2.0.3",
+    "@types/node": "^24.0.7",
+    "conventional-changelog-cli": "5.0.0",
+    "jest": "^23.6.0",
+    "ts-jest": "^29.4.0",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.5"
+  },
+  "engines": {
+    "node": ">=14.14",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
+  "pnpm": {
+    "patchedDependencies": {
+      "@changesets/cli@2.25.0": "patches/@changesets__cli@2.25.0.patch"
+    }
+  }
+}
